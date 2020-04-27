@@ -135,3 +135,124 @@ stargazer(ols, type="text", title="Interest Rate Results", single.row=TRUE,
 #movements in the three month lead to movements in 10 year
 #r squared metric is 4%
 #interest rate movements are really difficult to explain
+
+
+
+# Common Economic Time Series Data in CRE
+threemonth = drop_na(fredr("DGS3MO", observation_start = as.Date("1990-01-01")))
+tenyear = drop_na(fredr("DGS10", observation_start = as.Date("1990-01-01")))
+fedfunds = drop_na(fredr(series_id = "FEDFUNDS", observation_start = as.Date("1990-01-01")))
+
+
+plot(threemonth$date, threemonth$value, pch=16, col='blue',
+     xlab="Date", ylab="%", 
+     main="Three-Month US Treasurys since 1990")
+grid(lw=2)
+lines(threemonth$date, threemonth$value, col='blue')
+
+
+plot(tenyear$date, tenyear$value, pch=16, col='blue',
+     xlab="Date", ylab="%", 
+     main="10-Year US Treasurys since 1990")
+grid(lw=2)
+lines(tenyear$date, tenyear$value, col='blue')
+abline(h=3, col='red')
+
+
+plot(fedfunds$date, fedfunds$value, col = 'blue', pch=16, 
+     ylab = "Rate", xlab = "Date", main="Fed Funds Rate since 1990")
+grid(lw=2)
+lines(fedfunds$date, fedfunds$value, col='blue')
+
+
+unrate = fredr(series_id = "UNRATE", observation_start = as.Date("1990-01-01"))
+plot(unrate$date, unrate$value, col = 'blue', main="US U-3 Unemployment Rate since 1990",
+     pch=16, ylab = "%", xlab = "Date")
+grid(lw=2)
+lines(unrate$date, unrate$value, col = 'blue')
+abline(v=as.Date("2008-09-30"), col="red")
+
+
+empgrowth = fredr(series_id = "PRS85006012", observation_start = as.Date("1980-01-01"))
+plot(empgrowth$date, empgrowth$value, col = 'blue', main="US Employment Growth since 1980",
+     pch=16, ylab = "%", xlab = "Date")
+grid(lw=2)
+lines(empgrowth$date, empgrowth$value, col = 'blue')
+abline(v=as.Date("2008-09-30"), col="red")
+abline(h=0, col="black")
+
+
+claims = fredr(series_id = "ICSA", observation_start = as.Date("1980-01-01"))
+claims$value = claims$value / 10000000
+plot(claims$date, claims$value, col = 'blue', main="Weekly UI Claims",
+     pch=16, ylab = "Claims (Millions)", xlab = "Date")
+grid(lw=2)
+lines(claims$date, claims$value, col = 'blue')
+abline(v=as.Date("2008-09-30"), col="red")
+
+
+yield_curve = fredr(series_id = "T10Y3M", observation_start=as.Date('2017-01-01'))
+plot(yield_curve$date, yield_curve$value, col = 'blue', main='Yield Curve since 2017', 
+     pch=16, ylab="%", xlab="Date")
+grid(lw=2)
+lines(yield_curve$date, yield_curve$value, col = 'blue')
+abline(h=0, col='red')
+
+
+tenyear = drop_na(fredr("DGS10", observation_start = as.Date("1990-01-01")))
+plot(tenyear$date, tenyear$value, pch=16, col='blue',
+     xlab="Date", ylab="%", ylim=c(0, 10),
+     main="Bernanke's Condundrum")
+grid(lw=2)
+lines(tenyear$date, tenyear$value, col='blue')
+lines(fedfunds$date, fedfunds$value, col = 'red', pch=16)
+
+
+balance = drop_na(fredr("WALCL", observation_start = as.Date("1990-01-01")))
+balance$value = balance$value * 1000
+plot(balance$date, balance$value, pch=16, col='blue',
+     xlab="Date", ylab="Nominal Value of Fed's Balance Sheet",
+     main="Powell's Condundrum")
+grid(lw=2)
+lines(balance$date, balance$value, col='blue')
+abline(v=as.Date("2008-09-30"), col="red")
+
+
+breakeven = drop_na(fredr("T10YIE", observation_start = as.Date("1990-01-01")))
+plot(breakeven$date, breakeven$value, pch=16, col='blue',
+     xlab="Date", ylab="%",
+     main="Market Expectations of Inflation in 10 Years")
+grid(lw=2)
+lines(breakeven$date, breakeven$value, col='blue')
+abline(v=as.Date("2008-09-30"), col="red")
+abline(h=2, col="black")
+
+
+cash = drop_na(fredr("MMMFFAQ027S", observation_start = as.Date("1990-01-01")))
+plot(cash$date, cash$value, pch=16, col='blue',
+     xlab="Date", ylab="Millions ($)",
+     main="Total Assets in Money Market Funds")
+grid(lw=2)
+lines(cash$date, cash$value, col='blue')
+abline(v=as.Date("2008-09-30"), col="red")
+
+
+libor = drop_na(fredr("USD3MTD156N", observation_start = as.Date("1990-01-01")))
+plot(libor$date, libor$value, pch=16, col='blue',
+     xlab="Date", ylab="%",
+     main="LIBOR and Other Important Benchmark Rates")
+grid(lw=2)
+lines(libor$date, libor$value, col='blue')
+abline(v=as.Date("2008-09-30"), col="red")
+lines(fedfunds$date, fedfunds$value, col = 'red', pch=16)
+ed = drop_na(fredr("DED3", observation_start = as.Date("1990-01-01")))
+lines(ed$date, ed$value, col = "green", pch=16)
+
+
+wilshire5000 = drop_na(fredr("WILL5000INDFC", observation_start = as.Date("1990-01-01")))
+plot(wilshire5000$date, wilshire5000$value, pch=16, col='blue',
+     xlab="Date", ylab="Index",
+     main="Wilshire 5000")
+grid(lw=2)
+lines(wilshire5000$date, wilshire5000$value, col='blue')
+abline(v=as.Date("2008-09-30"), col="red")
