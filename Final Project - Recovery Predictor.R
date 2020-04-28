@@ -80,7 +80,7 @@ data$yieldcurve.l1 = lag(data$yieldcurve, 1)
 # Lag the value.  Rename the variables and run the regresion.
 # Now you have fit a perfect model.
 
-gdp_pc = fredr('A229RX0A048NBEA') # Grab GDP per capita
+gdp_pc = fredr('A229RX0A048NBEA') # Grab GDP per capita 
 attach(gdp_pc) # Attach and plot.
 plot(date, value, pch=16, col="darkblue", main="GDP Per Capita (2009 $)", 
      xlab="Date", ylab="GDP Per Capita")  ## time series plot in R  
