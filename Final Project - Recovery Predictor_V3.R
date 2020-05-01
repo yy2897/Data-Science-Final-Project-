@@ -93,6 +93,72 @@ data$yieldcurve.l1 = lag(data$yieldcurve, 1)
 
 #Step 3: Determine the Model to Use
 
+# linear probability model option:
+
+# The Linear Probability Model From Class 
+# The linear algorithm is a very powerful tool with many applications.
+# One of its core strengths is the ease with which we can interpret its results.
+# Let's use another application.
+rm(list = ls())
+admit = read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
+attach(admit)
+summary(admit)
+head(admit)
+
+#admit is an indicator variable 
+#1 indicates they did, 0 indicates they did not
+
+
+# Notes:
+# Admit is categorical: 0 is "Applicant Not Admitted", 1 is "Applicant Is Admitted".
+# GRE is continuous measure of the applicant's Graduate Record Exam score.
+# GPA is continuous measure of the applicant's Grade Point Average.
+# Rank is the categorical ranking of the school the applicant attended as an undergraduate.
+
+admit$rank = as.factor(rank) # Designate Rank as a categorical for R.
+model = lm('admit ~ gre + gpa + rank', data = admit)
+
+#estimates a simple linear model
+
+stargazer(model, type="text", title="Model", single.row=TRUE, 
+          ci=TRUE, ci.level=0.95, digits = 4)
+
+#within stargazer, we can interpret results in the same manner as we interpreted results from linear model looking at cap rates
+
+
+# Notes:
+# Let's interpret the results from the linear probability model.
+# GRE: Graduate Record Examine: a one point increase in GRE increases probability of admission by 0.0004 or 0.04%
+# GPA: Grade Point Average: a one point increase in GPA increases probability of admission by 0.156 or 15.6%.
+# rank: Going to a tier 2 school reduces probabilty of admission by 0.1624 or 16.24% (relative to a tier 1 school).
+
+
+model$coefficients #R stores results from a model in coefficients, combines model with coefficients
+
+mean(gre)
+mean(gpa)
+
+model$coefficients[1] + model$coefficients[6] + model$coefficients[2] * mean(gre) +
+        model$coefficients[3] * mean(gpa)
+
+# What about a tier 3 school?
+model$coefficients[1] + model$coefficients[5] + model$coefficients[2] * mean(gre) +
+        model$coefficients[3] * mean(gpa)
+
+# What about a tier 2 school?
+model$coefficients[1] + model$coefficients[4] + model$coefficients[2] * mean(gre) +
+        model$coefficients[3] * mean(gpa)
+
+# What about a tier 1 school?
+model$coefficients[1] + model$coefficients[2] * mean(gre) +
+        model$coefficients[3] * mean(gpa)
+
+#if you look at results from stargazer, can see that the measures relative to rank 1 measure bears out
+#new use case: linear probability model
+#prediction versus evaluating impact of an intervention
+
+
+# other model considerations
 # Random Forest Classifier?
 
 #notes from Class 8
@@ -287,68 +353,5 @@ stargazer(logit, type="text", title="Model", single.row=TRUE,
 test$spamhat = predict(logit, newdata = test, type = "response")
 
 
-# linear probability model option:
-
-# The Linear Probability Model From Class 
-# The linear algorithm is a very powerful tool with many applications.
-# One of its core strengths is the ease with which we can interpret its results.
-# Let's use another application.
-rm(list = ls())
-admit = read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
-attach(admit)
-summary(admit)
-head(admit)
-
-#admit is an indicator variable 
-#1 indicates they did, 0 indicates they did not
-
-
-# Notes:
-# Admit is categorical: 0 is "Applicant Not Admitted", 1 is "Applicant Is Admitted".
-# GRE is continuous measure of the applicant's Graduate Record Exam score.
-# GPA is continuous measure of the applicant's Grade Point Average.
-# Rank is the categorical ranking of the school the applicant attended as an undergraduate.
-
-admit$rank = as.factor(rank) # Designate Rank as a categorical for R.
-model = lm('admit ~ gre + gpa + rank', data = admit)
-
-#estimates a simple linear model
-
-stargazer(model, type="text", title="Model", single.row=TRUE, 
-          ci=TRUE, ci.level=0.95, digits = 4)
-
-#within stargazer, we can interpret results in the same manner as we interpreted results from linear model looking at cap rates
-
-
-# Notes:
-# Let's interpret the results from the linear probability model.
-# GRE: Graduate Record Examine: a one point increase in GRE increases probability of admission by 0.0004 or 0.04%
-# GPA: Grade Point Average: a one point increase in GPA increases probability of admission by 0.156 or 15.6%.
-# rank: Going to a tier 2 school reduces probabilty of admission by 0.1624 or 16.24% (relative to a tier 1 school).
-
-
-model$coefficients #R stores results from a model in coefficients, combines model with coefficients
-
-mean(gre)
-mean(gpa)
-
-model$coefficients[1] + model$coefficients[6] + model$coefficients[2] * mean(gre) +
-        model$coefficients[3] * mean(gpa)
-
-# What about a tier 3 school?
-model$coefficients[1] + model$coefficients[5] + model$coefficients[2] * mean(gre) +
-        model$coefficients[3] * mean(gpa)
-
-# What about a tier 2 school?
-model$coefficients[1] + model$coefficients[4] + model$coefficients[2] * mean(gre) +
-        model$coefficients[3] * mean(gpa)
-
-# What about a tier 1 school?
-model$coefficients[1] + model$coefficients[2] * mean(gre) +
-        model$coefficients[3] * mean(gpa)
-
-#if you look at results from stargazer, can see that the measures relative to rank 1 measure bears out
-#new use case: linear probability model
-#prediction versus evaluating impact of an intervention
 
 
