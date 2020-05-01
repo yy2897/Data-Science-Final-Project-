@@ -27,17 +27,15 @@ recession = fredr('USREC')
 
 #Step 2: Gather Relevant data that may be predictors of the state of economy
 
-#The Yield Curve 
+#The Yield Curve tends to invert when we are in a recession or before a recession
 yieldcurve = fredr('T10Y3MM')
 
-#Credit spreads tend to spike when we enter a recession 
-
+#Credit spreads tend to spike before we enter a recession 
 bbbspreads = fredr('BAMLC0A4CBBB')
-
 #Moody's Seasoned Baa Corporate Bond Yield Relative to Yield on 10-Year Treasury Constant Maturity
 baaspread = fredr(series_id = "BAA10Y")
 
-#University of Michigan: Consumer Sentiment declines when we are in a recession
+#University of Michigan: Consumer Sentiment declines before / while we are in a recession
 sentiment = fredr(series_id="UMCSENT")
 summary(sentiment)
 
@@ -290,7 +288,6 @@ test$spamhat = predict(logit, newdata = test, type = "response")
 
 
 # linear probability model option:
-
 
 # The Linear Probability Model From Class 
 # The linear algorithm is a very powerful tool with many applications.
