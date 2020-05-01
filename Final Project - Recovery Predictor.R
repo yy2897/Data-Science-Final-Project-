@@ -1,4 +1,56 @@
 
+#=============================Prediction Start============================
+library(quantmod)
+library(stargazer)
+library(fredr)
+library(tidyr)
+library(PASWR2)
+library(MASS)
+library(repmis)
+library(latex2exp)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(RCurl)
+library(haven)
+library(forecast)
+library(depmixS4)
+fredr_set_key('30e6ecb242a73869e11cb35f6aa3afc3') # Copy and paste your FREDR key.
+
+#identify potential influential variables / data and plot to assess trends
+#recovery indicator 
+#yield curve inverted or not
+#gdp growth - do we have this
+
+rm(list = ls())
+recovery = fredr('USREC')
+yieldcurve = fredr('T10Y3MM')
+gdp_pc = fredr('A229RX0A048NBEA')
+pcchange = drop_na(fredr("DPCERL1Q225SBEA"))
+unrate = fredr(series_id = "UNRATE")
+
+## Merge into single time-series dataset
+data = merge(recovery, yieldcurve, by.x='date', by.y='date')
+data= merge(data, gdp_pc, by.x='date', by.y='date')
+data=merge(data,pcchange,by.x='date', by.y='date')
+data=merge(data,unrate,by.x='date', by.y='date')
+names = c("date", "rec", "recovery","y", "yieldcurve", "g", "gdp","pc","pcchange","u","unrate")
+colnames(data)=names
+data = subset(data, select = c(date, recovery,yieldcurve,gdp,pcchange,unrate))
+data$yieldcurve = data$yieldcurve * 100
+summary(data)
+#creates a lagged value on the yieldcurve,gdp,pcchange,unrate variable
+data$yieldcurve.l1 = lag(data$yieldcurve, 1)
+data$gdp.l1=lag(data$gdp, 1)
+data$pcchange.l1=lag(data$pcchange, 1)
+data$unrate.l1=lag(data$unrate, 1)
+model = lm(recovery ~ yieldcurve+ yieldcurve.l1+gdp+gdp.l1+pcchange+pcchange.l1+unrate+unrate.l1, data=data)
+stargazer(model, type="text", title="Recovery Predictor", single.row=TRUE, 
+          ci=TRUE, ci.level=0.95)
+
+
+
+#=============================Prediction End============================
 library(quantmod)
 library(stargazer)
 library(fredr)
